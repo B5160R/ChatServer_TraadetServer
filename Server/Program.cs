@@ -1,12 +1,7 @@
-﻿using System.Collections.Generic;
-using System;
-using System.Text;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
-using System.IO;
-using System.Threading;
-using System.Collections;
 
+// Server
 namespace ConsoleApplication1
 {
     public class Serv
@@ -22,7 +17,6 @@ namespace ConsoleApplication1
                 Console.WriteLine("The local End point is  :" + myList.LocalEndpoint);
                 while (true)
                 {
-                    string myNick = "test";
                     Console.WriteLine("Waiting for a new connection.....");
                     Socket s = myList.AcceptSocket();
                     ClientHandler ch = new ClientHandler(s);
