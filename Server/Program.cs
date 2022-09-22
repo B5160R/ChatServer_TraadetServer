@@ -80,17 +80,22 @@ namespace ConsoleApplication1
                         if(txt == "q") return; // User leaves the chat returns nothing
 
                         // The following if statement could be less "hacky", but it works:)
+                        // If client writes "-" program regonizes it as an "option"
                         else if(txt.Substring(6,1) == "-")
                         {
                             option = txt.Substring(7);
 
+                            // Option "-to" client request for private messaging
                             if(option.Substring(0,2) == "to")
                             {
+                                // Finds the "nick" for client to send the private message to
                                 nick = option.Substring(3,4);
+                                // Finds the private message
                                 privateMsg = option.Substring(8);
                                 Serv.clientHandlers[nick].writer.Write($"PRIVATE {nick}: {privateMsg}");
                             }
 
+                            // Option "-list" to show list of online clients
                             else if(option == "list")
                             {
                                 writer.Write("*** List of online users ***\n");
@@ -101,6 +106,7 @@ namespace ConsoleApplication1
                                 writer.Write("\n****************************");
                             }
                         }
+                        // If no options requested --> Writes to all online clients
                         else 
                         {
                             foreach (var pair in Serv.clientHandlers)

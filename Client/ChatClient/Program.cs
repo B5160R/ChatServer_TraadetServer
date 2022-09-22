@@ -1,9 +1,5 @@
-﻿// TCP client by JTM
-using System;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
+﻿using System.Net.Sockets;
+
    class Program
    {
        public static async Task Main()
@@ -13,29 +9,34 @@ using System.Threading;
            NetworkStream s = tcpclient.GetStream();
            BinaryReader r = new BinaryReader(s);
            BinaryWriter w = new BinaryWriter(s);
+
            Console.Write("Enter nickname: ");
+
+           // Saves nick Client side to use as indentifier for the msg
            string nick = Console.ReadLine();
            w.Write(nick); // Nick
+
            string msg = null;
            while (msg!="q")
             {
-                Task t = Task.Run(() =>
+                // Writes data continueously from chat server to client
+                Task chatStreamUpdate = Task.Run(() =>
                         {
                                 while (s.DataAvailable)
                                 Console.WriteLine(r.ReadString()); // response
+                                Thread.Sleep(1000);
                         });
-                    Task c = Task.Run(() =>
-                    {   
-                            msg = Console.ReadLine();
-                            w.Write($"{nick}: {msg}"); // request
 
-                            // while (s.DataAvailable)
-                            //     Console.WriteLine(r.ReadString()); // response
-                    });
+                // Writes data from client to server
+                Task chatStreamWriter = Task.Run(() =>
+                        {   
+                                msg = Console.ReadLine();
+                                w.Write($"{nick}: {msg}"); // request
+                        });
             }
+            // Default message for server notifying other clients that client has left the server
             w.Write($"*** {nick} has left the chat ***");
+
             tcpclient.Close();
-           
-           
        }
    }
